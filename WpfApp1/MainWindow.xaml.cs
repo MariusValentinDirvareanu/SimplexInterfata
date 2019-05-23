@@ -44,14 +44,14 @@ namespace WpfApp1
                 }
 
                 // Adauga textbox-uri pentru ecuatie
-                ecuatie[coloana - 1] = new TextBox
+                ecuatie[coloana - 2] = new TextBox
                 {
                     MinWidth = 20,
                     Margin = new Thickness(5, 5, 5, 5)
                 };
-                da.Children.Add(ecuatie[coloana - 1]);
-                Grid.SetColumn(ecuatie[coloana - 1], coloana);
-                Grid.SetRow(ecuatie[coloana - 1], 3);
+                da.Children.Add(ecuatie[coloana - 2]);
+                Grid.SetColumn(ecuatie[coloana - 2], coloana);
+                Grid.SetRow(ecuatie[coloana - 2], 3);
 
             }
             else
@@ -135,14 +135,14 @@ namespace WpfApp1
                 }
 
                 // Adaugare textbox-uri pentru rezultatele restrictiilor
-                rezultateRestrictii[0] = new TextBox
+                rezultateRestrictii[rand - 5] = new TextBox
                 {
                     MinWidth = 20,
                     Margin = new Thickness(5, 5, 5, 5)
                 };
-                da.Children.Add(rezultateRestrictii[0]);
-                Grid.SetColumn(rezultateRestrictii[0], 38);
-                Grid.SetRow(rezultateRestrictii[0], rand);
+                da.Children.Add(rezultateRestrictii[rand - 5]);
+                Grid.SetColumn(rezultateRestrictii[rand - 5], 38);
+                Grid.SetRow(rezultateRestrictii[rand - 5], rand);
 
                 // Adugare semne
                 semne[rand - 4] = new ComboBox
@@ -235,6 +235,34 @@ namespace WpfApp1
                     }
                 }
             }
+
+            for (int b = 0; b < coloana - 2; ++b)
+            {
+                if (ecuatie[b].Text != string.Empty)
+                {
+                    tablou[rand - 5, b] = int.Parse(ecuatie[b].Text);
+                }
+                else
+                {
+                    tablou[rand - 5, b] = 0;
+                }
+            }
+
+            for (int c = 0; c < rand - 5; ++c)
+            {
+                if (rezultateRestrictii[c].Text != string.Empty)
+                {
+                    tablou[c, coloana - 2] = int.Parse(rezultateRestrictii[c].Text);
+                }
+                else
+                {
+                    tablou[c, coloana - 2] = 0;
+                }
+            }
+
+
+            tablou[rand - 5, coloana - 2] = 0;
+
         }
     }
 }
