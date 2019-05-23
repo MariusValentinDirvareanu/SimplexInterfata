@@ -15,25 +15,28 @@ namespace WpfApp1
         }
 
         private int coloana = 2;
-        private int rand = 4;
+        private int rand = 5;
         private readonly TextBox[,] restrictii = new TextBox[1000, 1000];
         private int j = 0;
         private int i = 0;
         private readonly int[,] tablou = new int[1000, 1000];
+        private readonly int[] ecuatie = new int[1000];
+
+        //Buton de adaugare coloane
         private void Buton_Click(object sender, RoutedEventArgs e)
         {
             if (i > 0)
             {
-                for (int a = 4; a < rand; ++a)
+                for (int a = 5; a < rand; ++a)
                 {
-                    restrictii[a - 4, j] = new TextBox
+                    restrictii[a - 5, j] = new TextBox
                     {
                         MinWidth = 20,
                         Margin = new Thickness(5, 5, 5, 5)
                     };
-                    da.Children.Add(restrictii[a - 4, j]);
-                    Grid.SetColumn(restrictii[a - 4, j], coloana);
-                    Grid.SetRow(restrictii[a - 4, j], a);
+                    da.Children.Add(restrictii[a - 5, j]);
+                    Grid.SetColumn(restrictii[a - 5, j], coloana);
+                    Grid.SetRow(restrictii[a - 5, j], a);
                 }
             }
             else
@@ -45,7 +48,7 @@ namespace WpfApp1
                 };
                 da.Children.Add(restrictii[0, j]);
                 Grid.SetColumn(restrictii[0, j], coloana);
-                Grid.SetRow(restrictii[0, j], 4);
+                Grid.SetRow(restrictii[0, j], 5);
                 i += 1;
                 rand += 1;
             }
@@ -56,12 +59,13 @@ namespace WpfApp1
             };
             da.Children.Add(lbl);
             Grid.SetColumn(lbl, coloana);
-            Grid.SetRow(lbl, 3);
+            Grid.SetRow(lbl, 4);
 
             coloana += 1;
             j += 1;
         }
 
+        // Buton de adaugare randuri
         private void ButonRanduri_Click(object sender, RoutedEventArgs e)
         {
             if (j > 0)
@@ -89,6 +93,15 @@ namespace WpfApp1
                 da.Children.Add(restrictii[i, 0]);
                 Grid.SetColumn(restrictii[i, 0], 2);
                 Grid.SetRow(restrictii[i, 0], rand);
+
+                Label lbl = new Label
+                {
+                    Content = "x0"
+                };
+                da.Children.Add(lbl);
+                Grid.SetColumn(lbl, coloana);
+                Grid.SetRow(lbl, 4);
+
                 j += 1;
                 coloana += 1;
             }
@@ -96,20 +109,23 @@ namespace WpfApp1
             i += 1;
         }
 
+        // Buton de rezolvare
         private void Calcul_Click(object sender, RoutedEventArgs e)
         {
-
-            for (int b = 0; b < rand - 4; ++b)
+            for (int b = 0; b < rand - 5; ++b)
             {
                 for (int c = 0; c < coloana - 2; ++c)
                 {
-                    tablou[b, c] = int.Parse(restrictii[b, c].Text);
+                    if (restrictii[b, c].Text != string.Empty)
+                    {
+                        tablou[b, c] = int.Parse(restrictii[b, c].Text);
+                    }
+                    else
+                    {
+                        tablou[b, c] = 0;
+                    }
                 }
             }
-
-
-
-
         }
     }
 }
