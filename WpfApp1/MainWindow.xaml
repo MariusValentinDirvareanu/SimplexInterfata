@@ -44,8 +44,9 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
@@ -84,6 +85,7 @@
                 Content="Adauga randuri" Click="ButonRanduri_Click"/>
         <Button x:Name="calcul" Content="Calculeaza!"
                 Grid.Column="1" Grid.Row="26" Click="Calcul_Click"/>
+
 
     </Grid>
 </Window>
