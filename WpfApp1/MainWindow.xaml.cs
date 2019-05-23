@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace WpfApp1
@@ -13,10 +14,14 @@ namespace WpfApp1
         private readonly TextBox[,] restrictii = new TextBox[1000, 1000];
         private int j = 0;
         private int i = 0;
-        private readonly int[,] tablou = new int[1000, 1000];
+        private readonly double[,] tablou = new double[1000, 1000];
         private readonly TextBox[] ecuatie = new TextBox[1000];
         private readonly TextBox[] rezultateRestrictii = new TextBox[1000];
         private readonly ComboBox[] semne = new ComboBox[1000];
+        private readonly StreamWriter fisier = new StreamWriter("fisier.txt");
+        private double pivot = 0, pivotDoi = 0, pivotUnu = 0;
+        private int pozitie = 0, jj = 0;
+        private int COLOANE = 0, LINII = 0;
 
         public MainWindow()
         {
@@ -218,6 +223,117 @@ namespace WpfApp1
             i += 1;
         }
 
+
+
+        // Partea de programe utilitare
+
+        private bool LiniePozitiva()
+        {
+            for (int ii = 0; ii < COLOANE; ++ii)
+            {
+                if (tablou[LINII-1, ii] < 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        // Gaseste minimul de pe ultima linie
+        private int MinNegativ()
+        {
+            double min = 0;
+            int poz = 0;
+            for (int e = 0; e < COLOANE; ++e)
+            {
+                if (min > tablou[LINII-1, e])
+                {
+                    min = tablou[LINII-1, e];
+                    poz = e;
+                }
+            }
+            return poz;
+        }
+
+        private void GasestePivot()
+        {
+            // Gaseste pivotul
+            double minim = 9999;
+            for (int ii = 0; ii < LINII-1; ++ii)
+            {
+                if (minim > tablou[ii, COLOANE-1] / tablou[ii, jj] && tablou[ii, jj] != 0)
+                {
+                    minim = tablou[ii, COLOANE-1] / tablou[ii, jj];
+                    pivot = tablou[ii, jj];
+                    pozitie = ii;
+                }
+            }
+        }
+
+
+        private void ImpartireLaPivot()
+        {
+            // Imparte linia pivotului la pivot
+            for (int ii = 0; ii < COLOANE; ++ii)
+            {
+                tablou[pozitie, ii] /= pivot;
+            }
+        }
+
+        private void LiniiPrecedentePivotului()
+        {
+            // Modifica liniile precedente pivotului
+            for (int ii = 0; ii < pozitie; ++ii)
+            {
+                pivotUnu = tablou[ii, jj];
+                for (int j1 = 0; j1 < COLOANE; ++j1)
+                {
+                    tablou[ii, j1] = tablou[ii, j1] - pivotUnu * tablou[pozitie, j1];
+                }
+            }
+        }
+
+        private void LiniiSuccesoarePivotului()
+        {
+            // Modifica liniile succesoare pivotului
+            for (int ii = pozitie + 1; ii < LINII; ++ii)
+            {
+                pivotDoi = tablou[ii, jj];
+                for (int j2 = 0; j2 < COLOANE; ++j2)
+                {
+                    tablou[ii, j2] = tablou[i, j2] - pivotDoi * tablou[pozitie, j2];
+                }
+            }
+        }
+
+        private void Maximizare()
+        {
+            while (LiniePozitiva() == false)
+            {
+                // Pozitia pe coloana a minimului de pe ultima linie
+                jj = MinNegativ();
+
+                GasestePivot();
+
+                ImpartireLaPivot();
+
+                LiniiPrecedentePivotului();
+
+                LiniiSuccesoarePivotului();
+
+                for (int b = 0; b < LINII; ++b)
+                {
+                    for (int c = 0; c < COLOANE; ++c)
+                    {
+                        fisier.Write(tablou[b, c] + " ");
+                    }
+                    fisier.Write('\n');
+                }
+                fisier.Write("\n\n");
+            }
+        }
+
         // Buton de rezolvare
         private void Calcul_Click(object sender, RoutedEventArgs e)
         {
@@ -227,7 +343,7 @@ namespace WpfApp1
                 {
                     if (restrictii[b, c].Text != string.Empty)
                     {
-                        tablou[b, c] = int.Parse(restrictii[b, c].Text);
+                        tablou[b, c] = double.Parse(restrictii[b, c].Text);
                     }
                     else
                     {
@@ -240,7 +356,8 @@ namespace WpfApp1
             {
                 if (ecuatie[b].Text != string.Empty)
                 {
-                    tablou[rand - 5, b] = int.Parse(ecuatie[b].Text);
+                    tablou[rand - 5, b] = double.Parse(ecuatie[b].Text);
+                    tablou[rand - 5, b] *= (-1);
                 }
                 else
                 {
@@ -252,16 +369,57 @@ namespace WpfApp1
             {
                 if (rezultateRestrictii[c].Text != string.Empty)
                 {
-                    tablou[c, coloana - 2] = int.Parse(rezultateRestrictii[c].Text);
+                    tablou[c, coloana - 1 + i] = double.Parse(rezultateRestrictii[c].Text);
                 }
                 else
                 {
-                    tablou[c, coloana - 2] = 0;
+                    tablou[c, coloana - 1 + i] = 0;
                 }
             }
 
+            //fisier.Write(rand-4);
 
-            tablou[rand - 5, coloana - 2] = 0;
+
+            for (int cc = 0; cc < rand - 4; ++cc)
+            {
+                for (int r = coloana - 2; r < coloana - 1 + i; ++r)
+                {
+                    //fisier.Write(r - (coloana - 2) + " ");
+                    if (cc == (r - (coloana - 2)))
+                    {
+                        tablou[cc, r] = 1;
+
+                    }
+                    else
+                    {
+                        tablou[cc, r] = 0;
+                    }
+                }
+            }
+
+            //fisier.Write("da:" + da);
+
+
+            //tablou[rand - 5, coloana - 2 + restrictiiAdd] = 0;
+
+            COLOANE = coloana + i;
+            LINII = rand - 4;
+
+            //fisier.Write(COLOANE + "si" + LINII);
+
+            Maximizare();
+
+
+
+            for (int b = 0; b < LINII; ++b)
+            {
+                for (int c = 0; c < COLOANE; ++c)
+                {
+                    fisier.Write(tablou[b, c] + " ");
+                }
+                fisier.Write('\n');
+            }
+            fisier.Close();
 
         }
     }
