@@ -103,7 +103,7 @@ namespace WpfApp1
             {
                 for (int c = 0; c < coloana - 2; ++c)
                 {
-                    tablou[b, c] = int.Parse(restrictii[0, 0].Text);
+                    tablou[b, c] = int.Parse(restrictii[b, c].Text);
                 }
             }
 
