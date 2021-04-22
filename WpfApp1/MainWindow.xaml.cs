@@ -2,33 +2,36 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WpfApp1
+namespace SimplexCalcul
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int coloana = 2;
-        private int rand = 5;
-        private readonly TextBox[,] restrictii = new TextBox[1000, 1000];
-        private int j = 0;
-        private int i = 0;
-        private readonly double[,] tablou = new double[1000, 1000];
-        private readonly TextBox[] ecuatie = new TextBox[1000];
-        private readonly TextBox[] rezultateRestrictii = new TextBox[1000];
-        private readonly ComboBox[] semne = new ComboBox[1000];
-        private readonly StreamWriter fisier = new StreamWriter("fisier.txt");
-        private double pivot = 0, pivotDoi = 0, pivotUnu = 0;
-        private int pozitie = 0, jj = 0;
-        private int COLOANE = 0, LINII = 0;
+        private int coloana { get; set; } = 2;
+        private int rand { get; set; } = 5;
+        private TextBox[,] restrictii { get; set; } = new TextBox[8, 8];
+        private int j { get; set; } = 0;
+        private TextBox[] ecuatie { get; set; } = new TextBox[8];
+        private TextBox[] rezultateRestrictii { get; set; } = new TextBox[8];
+        private ComboBox[] semne { get; set; } = new ComboBox[8];
+        private Fraction pivot { get; set; } = new Fraction(0, 1);
+        private Fraction PivotDoi { get; set; } = new Fraction(0, 1);
+        private Fraction pivotUnu { get; set; } = new Fraction(0, 1);
+        private int pozitie { get; set; } = 0;
+        private int jj { get; set; } = 0;
+        private int COLOANE { get; set; } = 0;
+        private int LINII { get; set; } = 0;
+        private Fraction[,] Tablou { get; set; } = new Fraction[8, 8];
+        private StreamWriter Fisier { get; set; } = new StreamWriter("fisier.txt");
+        private int i { get; set; } = 0;
 
         public MainWindow()
         {
             InitializeComponent();
 
         }
-
 
 
         //Buton de adaugare coloane
@@ -97,8 +100,8 @@ namespace WpfApp1
                     MinWidth = 50,
                     Margin = new Thickness(5, 5, 5, 5)
                 };
-                semne[0].Items.Add("<");
-                semne[0].Items.Add(">");
+                semne[0].Items.Add("<=");
+                semne[0].Items.Add(">=");
                 semne[0].SelectedIndex = 1;
                 da.Children.Add(semne[0]);
                 Grid.SetColumn(semne[0], 37);
@@ -155,8 +158,8 @@ namespace WpfApp1
                     MinWidth = 50,
                     Margin = new Thickness(5, 5, 5, 5)
                 };
-                semne[rand - 4].Items.Add("<");
-                semne[rand - 4].Items.Add(">");
+                semne[rand - 4].Items.Add("<=");
+                semne[rand - 4].Items.Add(">=");
                 semne[rand - 4].SelectedIndex = 1;
                 da.Children.Add(semne[rand - 4]);
                 Grid.SetColumn(semne[rand - 4], 37);
@@ -208,8 +211,8 @@ namespace WpfApp1
                     MinWidth = 50,
                     Margin = new Thickness(5, 5, 5, 5)
                 };
-                semne[0].Items.Add("<");
-                semne[0].Items.Add(">");
+                semne[0].Items.Add("<=");
+                semne[0].Items.Add(">=");
                 semne[0].SelectedIndex = 1;
                 da.Children.Add(semne[0]);
                 Grid.SetColumn(semne[0], 37);
@@ -231,7 +234,7 @@ namespace WpfApp1
         {
             for (int ii = 0; ii < COLOANE; ++ii)
             {
-                if (tablou[LINII-1, ii] < 0)
+                if (Tablou[LINII - 1, ii] < 0)
                 {
                     return false;
                 }
@@ -247,9 +250,9 @@ namespace WpfApp1
             int poz = 0;
             for (int e = 0; e < COLOANE; ++e)
             {
-                if (min > tablou[LINII-1, e])
+                if (min > Tablou[LINII - 1, e])
                 {
-                    min = tablou[LINII-1, e];
+                    min = Tablou[LINII - 1, e];
                     poz = e;
                 }
             }
@@ -259,13 +262,13 @@ namespace WpfApp1
         private void GasestePivot()
         {
             // Gaseste pivotul
-            double minim = 9999;
-            for (int ii = 0; ii < LINII-1; ++ii)
+            Fraction minim = new Fraction(long.MaxValue, 1);
+            for (int ii = 0; ii < LINII - 1; ++ii)
             {
-                if (minim > tablou[ii, COLOANE-1] / tablou[ii, jj] && tablou[ii, jj] != 0)
+                if (minim > Tablou[ii, COLOANE - 1] / Tablou[ii, jj] && Tablou[ii, jj] != new Fraction(0,1))
                 {
-                    minim = tablou[ii, COLOANE-1] / tablou[ii, jj];
-                    pivot = tablou[ii, jj];
+                    minim = Tablou[ii, COLOANE - 1] / Tablou[ii, jj];
+                    pivot = Tablou[ii, jj];
                     pozitie = ii;
                 }
             }
@@ -277,7 +280,7 @@ namespace WpfApp1
             // Imparte linia pivotului la pivot
             for (int ii = 0; ii < COLOANE; ++ii)
             {
-                tablou[pozitie, ii] /= pivot;
+                Tablou[pozitie, ii] /= pivot;
             }
         }
 
@@ -286,10 +289,10 @@ namespace WpfApp1
             // Modifica liniile precedente pivotului
             for (int ii = 0; ii < pozitie; ++ii)
             {
-                pivotUnu = tablou[ii, jj];
+                pivotUnu = Tablou[ii, jj];
                 for (int j1 = 0; j1 < COLOANE; ++j1)
                 {
-                    tablou[ii, j1] = tablou[ii, j1] - pivotUnu * tablou[pozitie, j1];
+                    Tablou[ii, j1] = Tablou[ii, j1] - pivotUnu * Tablou[pozitie, j1];
                 }
             }
         }
@@ -299,10 +302,10 @@ namespace WpfApp1
             // Modifica liniile succesoare pivotului
             for (int ii = pozitie + 1; ii < LINII; ++ii)
             {
-                pivotDoi = tablou[ii, jj];
+                PivotDoi = Tablou[ii, jj];
                 for (int j2 = 0; j2 < COLOANE; ++j2)
                 {
-                    tablou[ii, j2] = tablou[i, j2] - pivotDoi * tablou[pozitie, j2];
+                    Tablou[ii, j2] = Tablou[i, j2] - PivotDoi * Tablou[pozitie, j2];
                 }
             }
         }
@@ -322,20 +325,66 @@ namespace WpfApp1
 
                 LiniiSuccesoarePivotului();
 
-                for (int b = 0; b < LINII; ++b)
-                {
-                    for (int c = 0; c < COLOANE; ++c)
-                    {
-                        fisier.Write(tablou[b, c] + " ");
-                    }
-                    fisier.Write('\n');
-                }
-                fisier.Write("\n\n");
+                ScriereInFisier();
             }
         }
 
         // Buton de rezolvare
         private void Calcul_Click(object sender, RoutedEventArgs e)
+        {
+            ExtragereRestrictii();
+            ExtragereEcuatie();
+            ExtragereRezultateRestrictii();
+
+            for (int cc = 0; cc < rand - 4; ++cc)
+            {
+                for (int r = coloana - 2; r < coloana - 1 + i; ++r)
+                {
+                    if (cc == (r - (coloana - 2)))
+                    {
+                        Tablou[cc, r].Numerator = 1;
+                        Tablou[cc, r].Denominator = 1;
+
+                    }
+                }
+            }
+
+
+            COLOANE = coloana + i;
+            LINII = rand - 4;
+
+            ScriereInFisier();
+            Maximizare();
+            Fisier.Close();
+            MessageBox.Show("Gata!");
+
+        }
+
+        private void ExtragereRezultateRestrictii()
+        {
+            for (int c = 0; c < rand - 5; ++c)
+            {
+                if (rezultateRestrictii[c].Text != string.Empty)
+                {
+                    Tablou[c, coloana - 1 + i].Numerator = int.Parse(rezultateRestrictii[c].Text);
+                    Tablou[c, coloana - 1 + i].Denominator = 1;
+                }
+            }
+        }
+
+        private void ExtragereEcuatie()
+        {
+            for (int b = 0; b < coloana - 2; ++b)
+            {
+                if (ecuatie[b].Text != string.Empty)
+                {
+                    Tablou[rand - 5, b].Numerator = int.Parse(ecuatie[b].Text) * (-1);
+                    Tablou[rand - 5, b].Denominator = 1;
+                }
+            }
+        }
+
+        private void ExtragereRestrictii()
         {
             for (int b = 0; b < rand - 5; ++b)
             {
@@ -343,84 +392,41 @@ namespace WpfApp1
                 {
                     if (restrictii[b, c].Text != string.Empty)
                     {
-                        tablou[b, c] = double.Parse(restrictii[b, c].Text);
-                    }
-                    else
-                    {
-                        tablou[b, c] = 0;
+                        Tablou[b, c].Numerator = int.Parse(restrictii[b, c].Text);
+                        Tablou[b, c].Denominator = 1;
                     }
                 }
             }
+        }
 
-            for (int b = 0; b < coloana - 2; ++b)
-            {
-                if (ecuatie[b].Text != string.Empty)
-                {
-                    tablou[rand - 5, b] = double.Parse(ecuatie[b].Text);
-                    tablou[rand - 5, b] *= (-1);
-                }
-                else
-                {
-                    tablou[rand - 5, b] = 0;
-                }
-            }
-
-            for (int c = 0; c < rand - 5; ++c)
-            {
-                if (rezultateRestrictii[c].Text != string.Empty)
-                {
-                    tablou[c, coloana - 1 + i] = double.Parse(rezultateRestrictii[c].Text);
-                }
-                else
-                {
-                    tablou[c, coloana - 1 + i] = 0;
-                }
-            }
-
-            //fisier.Write(rand-4);
-
-
-            for (int cc = 0; cc < rand - 4; ++cc)
-            {
-                for (int r = coloana - 2; r < coloana - 1 + i; ++r)
-                {
-                    //fisier.Write(r - (coloana - 2) + " ");
-                    if (cc == (r - (coloana - 2)))
-                    {
-                        tablou[cc, r] = 1;
-
-                    }
-                    else
-                    {
-                        tablou[cc, r] = 0;
-                    }
-                }
-            }
-
-            //fisier.Write("da:" + da);
-
-
-            //tablou[rand - 5, coloana - 2 + restrictiiAdd] = 0;
-
-            COLOANE = coloana + i;
-            LINII = rand - 4;
-
-            //fisier.Write(COLOANE + "si" + LINII);
-
-            Maximizare();
-
-
-
+        private void ScriereInFisier()
+        {
             for (int b = 0; b < LINII; ++b)
             {
                 for (int c = 0; c < COLOANE; ++c)
                 {
-                    fisier.Write(tablou[b, c] + " ");
+                    if (Tablou[b, c].Denominator == 1)
+                    {
+                        Fisier.Write(Tablou[b, c].Numerator + " ");
+                    }
+                    else
+                    {
+                        Fisier.Write(Tablou[b, c] + " ");
+                    }
                 }
-                fisier.Write('\n');
+                Fisier.Write('\n');
             }
-            fisier.Close();
-
+            Fisier.Write("\n\n");
+        }
+        private void Window_Initialized(object sender, System.EventArgs e)
+        {
+            for (int i = 0; i < 8; ++i)
+            {
+                for (int j = 0; j < 8; ++j)
+                {
+                    Tablou[i, j] = new Fraction(0, 1);
+                }
+            }
         }
     }
 }
