@@ -1,7 +1,8 @@
-﻿using System.Windows;
+﻿using SimplexCalcul;
+using System.Windows;
 using System.Windows.Controls;
 
-namespace SimplexCalcul
+namespace SimplexGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -16,14 +17,10 @@ namespace SimplexCalcul
         private ComboBox[] Semne { get; set; } = new ComboBox[8];
 
         public Simplex SimplexCal { get; private set; } = new Simplex();
-
         public MainWindow()
         {
             InitializeComponent();
-
         }
-
-
         //Buton de adaugare coloane
         private void Buton_Click(object sender, RoutedEventArgs e)
         {
