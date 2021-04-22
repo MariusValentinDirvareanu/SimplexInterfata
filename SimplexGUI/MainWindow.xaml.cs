@@ -21,6 +21,7 @@ namespace SimplexGUI
         {
             InitializeComponent();
         }
+
         //Buton de adaugare coloane
         private void Buton_Click(object sender, RoutedEventArgs e)
         {
@@ -28,86 +29,20 @@ namespace SimplexGUI
             {
                 for (int counter = 5; counter < Rand; ++counter)
                 {
-                    Restrictii[counter - 5, SimplexCal.j] = new TextBox
-                    {
-                        MinWidth = 20,
-                        Margin = new Thickness(5, 5, 5, 5)
-                    };
-                    da.Children.Add(Restrictii[counter - 5, SimplexCal.j]);
-                    Grid.SetColumn(Restrictii[counter - 5, SimplexCal.j], Coloana);
-                    Grid.SetRow(Restrictii[counter - 5, SimplexCal.j], counter);
+                    AdaugareRestrictiiColoana(counter - 5, SimplexCal.j);
                 }
-
-                // Adauga textbox-uri pentru ecuatie
-                Ecuatie[Coloana - 2] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(Ecuatie[Coloana - 2]);
-                Grid.SetColumn(Ecuatie[Coloana - 2], Coloana);
-                Grid.SetRow(Ecuatie[Coloana - 2], 3);
-
+                AdaugareEcuatie(Coloana - 2, 3);
             }
             else
             {
-                Restrictii[0, SimplexCal.j] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(Restrictii[0, SimplexCal.j]);
-                Grid.SetColumn(Restrictii[0, SimplexCal.j], Coloana);
-                Grid.SetRow(Restrictii[0, SimplexCal.j], 5);
-
-
-                // Adauga textbox-uri pentru ecuatie
-                Ecuatie[0] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(Ecuatie[0]);
-                Grid.SetColumn(Ecuatie[0], 2);
-                Grid.SetRow(Ecuatie[0], 3);
-
-                // Adaugare textbox-uri pentru rezultatele restrictiilor
-                RezultateRestrictii[0] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(RezultateRestrictii[0]);
-                Grid.SetColumn(RezultateRestrictii[0], 38);
-                Grid.SetRow(RezultateRestrictii[0], 5);
-
-                // Adugare semne
-                Semne[0] = new ComboBox
-                {
-                    MinWidth = 50,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                Semne[0].Items.Add("<=");
-                Semne[0].Items.Add(">=");
-                Semne[0].SelectedIndex = 1;
-                da.Children.Add(Semne[0]);
-                Grid.SetColumn(Semne[0], 37);
-                Grid.SetRow(Semne[0], 5);
-
-
-
+                AdaugareRestrictiiColoana(0, SimplexCal.j);
+                AdaugareEcuatie(0, 3);
+                AdaugareTextBoxRezultateRestrictii(0);
+                AdaugareSemne(0, 5);
                 SimplexCal.i += 1;
                 Rand += 1;
             }
-
-            Label lbl = new Label
-            {
-                Content = "x" + (Coloana - 2).ToString()
-            };
-            da.Children.Add(lbl);
-            Grid.SetColumn(lbl, Coloana);
-            Grid.SetRow(lbl, 4);
-
+            AdaugareLabel("x" + (Coloana - 2).ToString());
             Coloana += 1;
             SimplexCal.j += 1;
         }
@@ -119,103 +54,24 @@ namespace SimplexGUI
             {
                 for (int counter = 2; counter < Coloana; ++counter)
                 {
-                    Restrictii[SimplexCal.i, counter - 2] = new TextBox
-                    {
-                        MinWidth = 20,
-                        Margin = new Thickness(5, 5, 5, 5)
-                    };
-                    da.Children.Add(Restrictii[SimplexCal.i, counter - 2]);
-                    Grid.SetColumn(Restrictii[SimplexCal.i, counter - 2], counter);
-                    Grid.SetRow(Restrictii[SimplexCal.i, counter - 2], Rand);
+                    AdaugareRestrictiiRand(SimplexCal.i, counter - 2);
                 }
-
-                // Adaugare textbox-uri pentru rezultatele restrictiilor
-                RezultateRestrictii[Rand - 5] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(RezultateRestrictii[Rand - 5]);
-                Grid.SetColumn(RezultateRestrictii[Rand - 5], 38);
-                Grid.SetRow(RezultateRestrictii[Rand - 5], Rand);
-
-                // Adugare semne
-                Semne[Rand - 4] = new ComboBox
-                {
-                    MinWidth = 50,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                Semne[Rand - 4].Items.Add("<=");
-                Semne[Rand - 4].Items.Add(">=");
-                Semne[Rand - 4].SelectedIndex = 1;
-                da.Children.Add(Semne[Rand - 4]);
-                Grid.SetColumn(Semne[Rand - 4], 37);
-                Grid.SetRow(Semne[Rand - 4], Rand);
-
+                AdaugareTextBoxRezultateRestrictii(Rand - 5);
+                AdaugareSemne(Rand - 4, Rand);
             }
             else
             {
-                Restrictii[SimplexCal.i, 0] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(Restrictii[SimplexCal.i, 0]);
-                Grid.SetColumn(Restrictii[SimplexCal.i, 0], 2);
-                Grid.SetRow(Restrictii[SimplexCal.i, 0], Rand);
-
-                Label lbl = new Label
-                {
-                    Content = "x0"
-                };
-                da.Children.Add(lbl);
-                Grid.SetColumn(lbl, Coloana);
-                Grid.SetRow(lbl, 4);
-
-                // Adauga textbox-uri pentru ecuatie
-                Ecuatie[0] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(Ecuatie[0]);
-                Grid.SetColumn(Ecuatie[0], 2);
-                Grid.SetRow(Ecuatie[0], 3);
-
-                // Adaugare textbox-uri pentru rezultatele restrictiilor
-                RezultateRestrictii[0] = new TextBox
-                {
-                    MinWidth = 20,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                da.Children.Add(RezultateRestrictii[0]);
-                Grid.SetColumn(RezultateRestrictii[0], 38);
-                Grid.SetRow(RezultateRestrictii[0], 5);
-
-                // Adugare semne
-                Semne[0] = new ComboBox
-                {
-                    MinWidth = 50,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-                Semne[0].Items.Add("<=");
-                Semne[0].Items.Add(">=");
-                Semne[0].SelectedIndex = 1;
-                da.Children.Add(Semne[0]);
-                Grid.SetColumn(Semne[0], 37);
-                Grid.SetRow(Semne[0], 5);
-
-
+                AdaugareRestrictiiRand(SimplexCal.i, 0);
+                AdaugareLabel("x0");
+                AdaugareEcuatie(0, 3);
+                AdaugareTextBoxRezultateRestrictii(0);
+                AdaugareSemne(0, 5);
                 SimplexCal.j += 1;
                 Coloana += 1;
             }
             Rand += 1;
             SimplexCal.i += 1;
         }
-
-
-
-
 
         // Buton de rezolvare
         private void Calcul_Click(object sender, RoutedEventArgs e)
@@ -232,10 +88,86 @@ namespace SimplexGUI
 
         }
 
-
         private void Window_Initialized(object sender, System.EventArgs e)
         {
             SimplexCal.InitializareTablou();
         }
+        private void AdaugareEcuatie(int Indice1, int Indice2)
+        {
+            Ecuatie[Indice1] = new TextBox
+            {
+                MinWidth = 50,
+                Margin = new Thickness(5, 5, 5, 5)
+            };
+            da.Children.Add(Ecuatie[Indice1]);
+            Grid.SetColumn(Ecuatie[Indice1], Indice1 + 2);
+            Grid.SetRow(Ecuatie[Indice1], Indice2);
+        }
+
+        private void AdaugareLabel(string Indice)
+        {
+            Label lbl = new Label
+            {
+                Content = Indice
+            };
+            da.Children.Add(lbl);
+            Grid.SetColumn(lbl, Coloana);
+            Grid.SetRow(lbl, 4);
+        }
+
+        private void AdaugareRestrictiiColoana(int Indice1, int Indice2)
+        {
+            Restrictii[Indice1, Indice2] = new TextBox
+            {
+                MinWidth = 50,
+                Margin = new Thickness(5, 5, 5, 5)
+            };
+            da.Children.Add(Restrictii[Indice1, Indice2]);
+            Grid.SetColumn(Restrictii[Indice1, Indice2], Coloana);
+            Grid.SetRow(Restrictii[Indice1, Indice2], Indice1 + 5);
+        }
+
+        private void AdaugareRestrictiiRand(int Indice1, int Indice2)
+        {
+            Restrictii[Indice1, Indice2] = new TextBox
+            {
+                MinWidth = 50,
+                Margin = new Thickness(5, 5, 5, 5)
+            };
+            da.Children.Add(Restrictii[Indice1, Indice2]);
+            Grid.SetColumn(Restrictii[Indice1, Indice2], Indice2 + 2);
+            Grid.SetRow(Restrictii[Indice1, Indice2], Rand);
+        }
+
+        private void AdaugareTextBoxRezultateRestrictii(int Indice1)
+        {
+            RezultateRestrictii[Indice1] = new TextBox
+            {
+                MinWidth = 50,
+                Margin = new Thickness(5, 5, 5, 5)
+            };
+            da.Children.Add(RezultateRestrictii[Indice1]);
+            Grid.SetColumn(RezultateRestrictii[Indice1], 38);
+            Grid.SetRow(RezultateRestrictii[Indice1], Indice1 + 5);
+        }
+
+        private void AdaugareSemne(int Indice1, int Indice2)
+        {
+            Semne[Indice1] = new ComboBox
+            {
+                MinWidth = 50,
+                Margin = new Thickness(5, 5, 5, 5)
+            };
+            Semne[Indice1].Items.Add("<=");
+            Semne[Indice1].Items.Add(">=");
+            Semne[Indice1].Items.Add("=");
+            Semne[Indice1].SelectedIndex = 1;
+            da.Children.Add(Semne[Indice1]);
+            Grid.SetColumn(Semne[Indice1], 37);
+            Grid.SetRow(Semne[Indice1], Indice2);
+        }
+
+
+
     }
 }
