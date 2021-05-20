@@ -14,7 +14,7 @@ namespace SimplexCalcul
         public int jj { get; private set; } = 0;
         public int COLOANE { get; set; } = 0;
         public int LINII { get; set; } = 0;
-        public Fraction[,] Tablou { get; private set; } = new Fraction[8, 8];
+        public Fraction[,] Tablou { get; private set; } = new Fraction[10, 10];
         public StreamWriter Fisier { get; private set; } = new StreamWriter("fisier.txt");
 
         // Partea de programe utilitare
@@ -114,8 +114,7 @@ namespace SimplexCalcul
                     if (counter1 == (counter2 - (coloana - 2)))
                     {
                         Tablou[counter1, counter2].Numerator = 1;
-                        Tablou[counter1, counter2].Denominator = 1;
-
+                        Tablou[counter1, counter2].Denominator = 1; 
                     }
                 }
             }
@@ -160,8 +159,19 @@ namespace SimplexCalcul
             }
         }
 
-        public void ScriereInFisier()
+        public void ScriereInFisier(int Rand, int Coloana)
         {
+            for(int counter = 0; counter < Coloana; ++counter)
+            {
+                Fisier.Write($"x{counter}" + "\t\t");
+            }
+            for (int counter = 0; counter < Rand; ++counter)
+            {
+                Fisier.Write($"s{counter}" + "\t\t");
+            }
+            Fisier.Write("P" + "\t\t\t\t");
+            Fisier.Write('\n');
+
             for (int counter1 = 0; counter1 < LINII; ++counter1)
             {
                 for (int counter2 = 0; counter2 < COLOANE; ++counter2)
@@ -187,7 +197,7 @@ namespace SimplexCalcul
             Fisier.Write("\n\n");
         }
 
-        public void Maximizare()
+        public void Maximizare(int Rand,int Coloana)
         {
             while (LiniePozitiva() == false)
             {
@@ -202,7 +212,7 @@ namespace SimplexCalcul
 
                 LiniiSuccesoarePivotului();
 
-                ScriereInFisier();
+                ScriereInFisier(Rand, Coloana);
             }
         }
         public void InitializareTablou()

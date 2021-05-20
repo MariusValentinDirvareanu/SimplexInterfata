@@ -1,4 +1,5 @@
 ﻿using SimplexCalcul;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,10 +12,10 @@ namespace SimplexGUI
     {
         private int Coloana { get; set; } = 2;
         private int Rand { get; set; } = 5;
-        private TextBox[,] Restrictii { get; set; } = new TextBox[8, 8];
-        private TextBox[] Ecuatie { get; set; } = new TextBox[8];
-        private TextBox[] RezultateRestrictii { get; set; } = new TextBox[8];
-        private ComboBox[] Semne { get; set; } = new ComboBox[8];
+        private TextBox[,] Restrictii { get; set; } = new TextBox[10, 10];
+        private TextBox[] Ecuatie { get; set; } = new TextBox[10];
+        private TextBox[] RezultateRestrictii { get; set; } = new TextBox[10];
+        private ComboBox[] Semne { get; set; } = new ComboBox[10];
 
         public Simplex SimplexCal { get; private set; } = new Simplex();
         public MainWindow()
@@ -22,8 +23,7 @@ namespace SimplexGUI
             InitializeComponent();
         }
 
-        //Buton de adaugare coloane
-        private void Buton_Click(object sender, RoutedEventArgs e)
+        private void ButonColoane_Click(object sender, RoutedEventArgs e)
         {
             if (SimplexCal.i > 0)
             {
@@ -47,7 +47,6 @@ namespace SimplexGUI
             SimplexCal.j += 1;
         }
 
-        // Buton de adaugare randuri
         private void ButonRanduri_Click(object sender, RoutedEventArgs e)
         {
             if (SimplexCal.j > 0)
@@ -81,11 +80,11 @@ namespace SimplexGUI
             SimplexCal.ExtragereRezultateRestrictii(RezultateRestrictii, Rand, Coloana);
             SimplexCal.VariabileAditionale(Rand, Coloana);
             SimplexCal.SetareColoaneSiLinii(Rand, Coloana);
-            SimplexCal.ScriereInFisier();
-            SimplexCal.Maximizare();
+            SimplexCal.ScriereInFisier(Rand - 5, Coloana - 2);
+            SimplexCal.Maximizare(Rand - 5, Coloana - 2);
             SimplexCal.Fisier.Close();
             MessageBox.Show("Gata!");
-
+            Process.Start("notepad.exe", "fisier.txt");
         }
 
         private void Window_Initialized(object sender, System.EventArgs e)
@@ -160,14 +159,10 @@ namespace SimplexGUI
             };
             Semne[Indice1].Items.Add("<=");
             Semne[Indice1].Items.Add(">=");
-            Semne[Indice1].Items.Add("=");
-            Semne[Indice1].SelectedIndex = 1;
+            Semne[Indice1].SelectedIndex = 0;
             da.Children.Add(Semne[Indice1]);
             Grid.SetColumn(Semne[Indice1], 37);
             Grid.SetRow(Semne[Indice1], Indice2);
         }
-
-
-
     }
 }
