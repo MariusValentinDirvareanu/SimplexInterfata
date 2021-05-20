@@ -11,7 +11,7 @@ namespace SimplexCalcul
         public Fraction PivotDoi { get; private set; } = new Fraction(0, 1);
         public Fraction PivotUnu { get; private set; } = new Fraction(0, 1);
         public int Pozitie { get; private set; } = 0;
-        public int jj { get; private set; } = 0;
+        public int pozitieMinimNegativ { get; private set; } = 0;
         public int COLOANE { get; set; } = 0;
         public int LINII { get; set; } = 0;
         public Fraction[,] Tablou { get; private set; } = new Fraction[10, 10];
@@ -27,9 +27,9 @@ namespace SimplexCalcul
 
         private bool LiniePozitiva()
         {
-            for (int ii = 0; ii < COLOANE; ++ii)
+            for (int counter = 0; counter < COLOANE; ++counter)
             {
-                if (Tablou[LINII - 1, ii] < 0)
+                if (Tablou[LINII - 1, counter] < 0)
                 {
                     return false;
                 }
@@ -41,30 +41,30 @@ namespace SimplexCalcul
         // Gaseste minimul de pe ultima linie
         private int MinNegativ()
         {
-            Fraction min = new Fraction(0, 1);
-            int poz = 0;
-            for (int e = 0; e < COLOANE; ++e)
+            Fraction minim = new Fraction(0, 1);
+            int pozitie = 0;
+            for (int counter = 0; counter < COLOANE; ++counter)
             {
-                if (min >= Tablou[LINII - 1, e])
+                if (minim >= Tablou[LINII - 1, counter])
                 {
-                    min = Tablou[LINII - 1, e];
-                    poz = e;
+                    minim = Tablou[LINII - 1, counter];
+                    pozitie = counter;
                 }
             }
-            return poz;
+            return pozitie;
         }
 
         private void GasestePivot()
         {
             // Gaseste pivotul
             Fraction minim = new Fraction(long.MaxValue, 1);
-            for (int ii = 0; ii < LINII - 1; ++ii)
+            for (int counter = 0; counter < LINII - 1; ++counter)
             {
-                if (minim > Tablou[ii, COLOANE - 1] / Tablou[ii, jj] && Tablou[ii, jj] != new Fraction(0, 1))
+                if (minim > Tablou[counter, COLOANE - 1] / Tablou[counter, pozitieMinimNegativ] && Tablou[counter, pozitieMinimNegativ] != new Fraction(0, 1))
                 {
-                    minim = Tablou[ii, COLOANE - 1] / Tablou[ii, jj];
-                    Pivot = Tablou[ii, jj];
-                    Pozitie = ii;
+                    minim = Tablou[counter, COLOANE - 1] / Tablou[counter, pozitieMinimNegativ];
+                    Pivot = Tablou[counter, pozitieMinimNegativ];
+                    Pozitie = counter;
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace SimplexCalcul
             // Modifica liniile precedente pivotului
             for (int counter1 = 0; counter1 < Pozitie; ++counter1)
             {
-                PivotUnu = Tablou[counter1, jj];
+                PivotUnu = Tablou[counter1, pozitieMinimNegativ];
                 for (int counter2 = 0; counter2 < COLOANE; ++counter2)
                 {
                     Tablou[counter1, counter2] = Tablou[counter1, counter2] - PivotUnu * Tablou[Pozitie, counter2];
@@ -97,7 +97,7 @@ namespace SimplexCalcul
             // Modifica liniile succesoare pivotului
             for (int counter1 = Pozitie + 1; counter1 < LINII; ++counter1)
             {
-                PivotDoi = Tablou[counter1, jj];
+                PivotDoi = Tablou[counter1, pozitieMinimNegativ];
                 for (int counter2 = 0; counter2 < COLOANE; ++counter2)
                 {
                     Tablou[counter1, counter2] = Tablou[i, counter2] - PivotDoi * Tablou[Pozitie, counter2];
@@ -165,10 +165,12 @@ namespace SimplexCalcul
             {
                 Fisier.Write($"x{counter}" + "\t\t");
             }
+
             for (int counter = 0; counter < Rand; ++counter)
             {
                 Fisier.Write($"s{counter}" + "\t\t");
             }
+
             Fisier.Write("P" + "\t\t\t\t");
             Fisier.Write('\n');
 
@@ -194,7 +196,7 @@ namespace SimplexCalcul
                 }
                 Fisier.Write('\n');
             }
-            Fisier.Write("\n\n");
+            Fisier.Write("\n--------------------------------------------------------------------------------------------------\n");
         }
 
         public void Maximizare(int Rand,int Coloana)
@@ -202,7 +204,7 @@ namespace SimplexCalcul
             while (LiniePozitiva() == false)
             {
                 // Pozitia pe coloana a minimului de pe ultima linie
-                jj = MinNegativ();
+                pozitieMinimNegativ = MinNegativ();
 
                 GasestePivot();
 
@@ -217,11 +219,11 @@ namespace SimplexCalcul
         }
         public void InitializareTablou()
         {
-            for (int counter = 0; counter < 8; ++counter)
+            for (int counter1 = 0; counter1 < 10; ++counter1)
             {
-                for (int j = 0; j < 8; ++j)
+                for (int counter2 = 0; counter2 < 10; ++counter2)
                 {
-                    Tablou[counter, j] = new Fraction(0, 1);
+                    Tablou[counter1, counter2] = new Fraction(0, 1);
                 }
             }
         }
